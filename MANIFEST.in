@@ -1,4 +1,4 @@
 include README.md
-recursive-include octoprint_meross_mss425f/templates *
-recursive-include octoprint_meross_mss425f/translations *
-recursive-include octoprint_meross_mss425f/static *
+recursive-include octoprint_meross_smart_plugs/templates *
+recursive-include octoprint_meross_smart_plugs/translations *
+recursive-include octoprint_meross_smart_plugs/static *

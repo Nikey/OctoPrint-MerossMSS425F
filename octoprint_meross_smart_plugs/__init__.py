@@ -23,7 +23,7 @@ async def shutdown(email, password):
 	manager.close()
 	await http_api_client.async_logout()
 
-class MerossMss425fPlugin(octoprint.plugin.AssetPlugin,
+class MerossSmartPlugsPlugin(octoprint.plugin.AssetPlugin,
 						  octoprint.plugin.SettingsPlugin,
 						  octoprint.plugin.StartupPlugin,
 						  octoprint.plugin.TemplatePlugin):
@@ -45,7 +45,7 @@ class MerossMss425fPlugin(octoprint.plugin.AssetPlugin,
 
 	def get_assets(self):
 		return dict(
-			less=["less/meross-mss425f.less"]
+			less=["less/meross-smart-plugs.less"]
 		)
 
 	##~~ Softwareupdate hook
@@ -55,47 +55,38 @@ class MerossMss425fPlugin(octoprint.plugin.AssetPlugin,
 		# Plugin here. See https://docs.octoprint.org/en/master/bundledplugins/softwareupdate.html
 		# for details.
 		return dict(
-			meross_mss425f=dict(
-				displayName="Octoprint-merossmss425f Plugin",
+			meross_smart_plugs=dict(
+				displayName="Octoprint-Meross Smart Plugs Plugin",
 				displayVersion=self._plugin_version,
 
 				# version check: github repository
 				type="github_release",
-				user="timgir",
-				repo="OctoPrint-MerossMSS425F",
+				user="Nikey",
+				repo="OctoPrint-MerossSmartPlugs",
 				current=self._plugin_version,
 
 				# update method: pip
-				pip="https://github.com/timgir/OctoPrint-MerossMSS425F/archive/{target_version}.zip"
+				pip="https://github.com/Nikey/OctoPrint-MerossSmartPlugs/archive/{target_version}.zip"
 			)
 		)
 
 	def hook_gcode_queuning(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
-		if gcode == 'M8888':
+		if gcode == 'M81':
 			email = self._settings.get(['email'])
 			password = self._settings.get(['password'])
 
 			if email != '' and password != '':
 				asyncio.create_task(shutdown(email, password))
 			else:
-				self._logger.info('Connection information are not been set !')
+				self._logger.info('Connection information are not been set!')
 
 
-# If you want your plugin to be registered within OctoPrint under a different name than what you defined in setup.py
-# ("OctoPrint-PluginSkeleton"), you may define that here. Same goes for the other metadata derived from setup.py that
-# can be overwritten via __plugin_xyz__ control properties. See the documentation for that.
-__plugin_name__ = "Meross MSS425F"
-
-# Starting with OctoPrint 1.4.0 OctoPrint will also support to run under Python 3 in addition to the deprecated
-# Python 2. New plugins should make sure to run under both versions for now. Uncomment one of the following
-# compatibility flags according to what Python versions your plugin supports!
-#__plugin_pythoncompat__ = ">=2.7,<3" # only python 2
-__plugin_pythoncompat__ = ">=3,<4" # only python 3
-#__plugin_pythoncompat__ = ">=2.7,<4" # python 2 and 3
+__plugin_name__ = "Meross Smart Plugs"
+__plugin_pythoncompat__ = ">=2.7,<4"
 
 def __plugin_load__():
 	global __plugin_implementation__
-	__plugin_implementation__ = MerossMss425fPlugin()
+	__plugin_implementation__ = MerossSmartPlugsPlugin()
 
 	global __plugin_hooks__
 	__plugin_hooks__ = {
