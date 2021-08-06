@@ -4,7 +4,7 @@ from meross_iot.http_api import MerossHttpClient
 from meross_iot.manager import MerossManager
 
 
-async def shutdown(email, password):
+def shutdown(email, password):
 	http_api_client = await MerossHttpClient.async_from_user_password(email=email,
 																	  password=password)
 
