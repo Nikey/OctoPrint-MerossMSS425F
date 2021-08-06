@@ -7,7 +7,7 @@ A simple Octoprint plugin for shutdown device like printer with Meross MSS425F s
 Install via the bundled [Plugin Manager](https://docs.octoprint.org/en/master/bundledplugins/pluginmanager.html)
 or manually using this URL:
 
-    https://github.com/timgir/OctoPrint-MerossMSS425F/archive/master.zip
+    https://github.com/Nikey/OctoPrint-MerossMSS425F/archive/master.zip
 
 ## Configuration
 
