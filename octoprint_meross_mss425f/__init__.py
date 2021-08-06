@@ -4,7 +4,7 @@ from meross_iot.http_api import MerossHttpClient
 from meross_iot.manager import MerossManager
 
 
-async def shutdown(email, password, id_plugs):
+async def shutdown(email, password):
 	http_api_client = await MerossHttpClient.async_from_user_password(email=email,
 																	  password=password)
 
@@ -12,16 +12,14 @@ async def shutdown(email, password, id_plugs):
 	await manager.async_init()
 
 	await manager.async_device_discovery()
-	plugs = manager.find_devices(device_type='mss425e') or manager.find_devices(device_type='mss425f')
+	plugs = manager.find_devices(device_type='mss210')
 
 	if len(plugs) > 0:
 		plug = plugs[0]
-
-		for id_plug in id_plugs:
-			await plug.async_update()
-			await asyncio.sleep(1)
-			await plug.async_turn_off(channel=id_plug)
-			await asyncio.sleep(1)
+		await plug.async_update()
+		await asyncio.sleep(1)
+		await plug.async_turn_off(channel=id_plug)
+		await asyncio.sleep(1)
 
 
 class MerossMss425fPlugin(octoprint.plugin.AssetPlugin,
@@ -34,14 +32,7 @@ class MerossMss425fPlugin(octoprint.plugin.AssetPlugin,
 	def get_settings_defaults(self):
 		return dict(
 			email='',
-			password='',
-			multiplug = dict(
-				first_plug=False,
-				second_plug=False,
-				third_plug=False,
-				fourth_plug=False,
-				usb_plug=False
-			)
+			password=''
 		)
 
 	def get_template_configs(self):
@@ -82,23 +73,9 @@ class MerossMss425fPlugin(octoprint.plugin.AssetPlugin,
 		if gcode == 'M81':
 			email = self._settings.get(['email'])
 			password = self._settings.get(['password'])
-			multiplug = self._settings.get(['multiplug'])
-
-			id_plug = []
-
-			if 'first_plug' in multiplug and multiplug['first_plug'] is True:
-				id_plug.append(1)
-			if 'second_plug' in multiplug and multiplug['second_plug'] is True:
-				id_plug.append(2)
-			if 'third_plug' in multiplug and multiplug['third_plug'] is True:
-				id_plug.append(3)
-			if 'fourth_plug' in multiplug and multiplug['fourth_plug'] is True:
-				id_plug.append(4)
-			if 'usb_plug' in multiplug and multiplug['usb_plug'] is True:
-				id_plug.append(5)
 
 			if email != '' and password != '':
-				asyncio.run(shutdown(email, password, id_plug))
+				asyncio.run(shutdown(email, password))
 			else:
 				self._logger.info('Connection information are not been set !')
 
