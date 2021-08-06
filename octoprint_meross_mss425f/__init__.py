@@ -4,7 +4,7 @@ from meross_iot.http_api import MerossHttpClient
 from meross_iot.manager import MerossManager
 
 
-def shutdown(email, password):
+async def shutdown(email, password):
 	http_api_client = await MerossHttpClient.async_from_user_password(email=email,
 																	  password=password)
 
@@ -78,7 +78,7 @@ class MerossMss425fPlugin(octoprint.plugin.AssetPlugin,
 			password = self._settings.get(['password'])
 
 			if email != '' and password != '':
-				shutdown(email, password)
+				asyncio.create_task(shutdown(email, password))
 			else:
 				self._logger.info('Connection information are not been set !')
 
