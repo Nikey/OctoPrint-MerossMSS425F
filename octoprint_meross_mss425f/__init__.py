@@ -18,7 +18,7 @@ async def shutdown(email, password):
 		plug = plugs[0]
 		await plug.async_update()
 		await asyncio.sleep(1)
-		await plug.async_turn_off(channel=id_plug)
+		await plug.async_turn_off()
 		await asyncio.sleep(1)
 	manager.close()
 	await http_api_client.async_logout()
