@@ -13,17 +13,17 @@ async def shutdown(email, password):
 
 	await manager.async_device_discovery()
 	plugs = manager.find_devices(device_type='mss210')
-        self._logger.info('Start shutdown')
+
 	if len(plugs) > 0:
-                self._logger.info('Found Device')
+		self._logger.info('Found Device')
 		plug = plugs[0]
 		await plug.async_update()
 		await asyncio.sleep(1)
 		await plug.async_turn_off(channel=id_plug)
 		await asyncio.sleep(1)
-        manager.close()
-        await http_api_client.async_logout()
-        self._logger.info('Finish shutdown')
+	manager.close()
+	await http_api_client.async_logout()
+	self._logger.info('Finish shutdown')
 
 class MerossMss425fPlugin(octoprint.plugin.AssetPlugin,
 						  octoprint.plugin.SettingsPlugin,
