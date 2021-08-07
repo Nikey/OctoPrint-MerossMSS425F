@@ -1,3 +1,4 @@
+import time
 import asyncio
 import octoprint.plugin
 from meross_iot.http_api import MerossHttpClient
@@ -14,7 +15,8 @@ async def shutdown(email, password, m_device_type, m_device_name, delay, plug_ch
                 if len(plugs) > 0:
                         plug = plugs[0]
                         await plug.async_update()
-                        await asyncio.sleep(delay)
+                        await asyncio.sleep(1)
+                        time.sleep(delay)
                         await plug.async_turn_off()
         else:
                 plugs = manager.find_devices(device_type='mss425e', device_name=m_device_name, channel=plug_channel) or manager.find_devices(device_type='mss425f', device_name=m_device_name, channel=plug_channel)
@@ -25,6 +27,7 @@ async def shutdown(email, password, m_device_type, m_device_name, delay, plug_ch
                                 await asyncio.sleep(1)
                                 await plug.async_turn_off(channel=id_plug)
                                 await asyncio.sleep(1)
+                        time.sleep(delay)
                 manager.close()
                 await http_api_client.async_logout()
 
