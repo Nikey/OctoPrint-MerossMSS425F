@@ -9,7 +9,7 @@ async def shutdown(email, password, m_device_type, m_device_name, delay, plug_ch
         manager = MerossManager(http_client=http_api_client)
         await manager.async_init()
         await manager.async_device_discovery()
-        if device_type=="MSS210":
+        if m_device_type=="MSS210":
                 plugs = manager.find_devices(device_type='mss210', device_name=m_device_name)
                 if len(plugs) > 0:
                         plug = plugs[0]
