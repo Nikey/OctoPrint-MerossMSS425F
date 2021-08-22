@@ -2,22 +2,32 @@
 	<legend>Meross Smart Plugs Plugin</legend>
     <div class="control-group">
 		<label class="control-label">{{  _('Device type') }}</label>
-		<select data-bind="value: settings.plugins.meross_smart_plugs.device_type">
-            <option value="MSS210">MSS210</option>
-            <option value="MSS425F">MSS425F or MSS425E</option>
-        </select>
+		<div class="controls">
+			<select data-bind="value: settings.plugins.meross_smart_plugs.device_type">
+				<option value="MSS210">MSS210</option>
+				<option value="MSS425F">MSS425F or MSS425E</option>
+			</select>
+		</div>
+	</div>
+	<div class="control-group">
         <label class="control-label">{{  _('Email') }}</label>
         <div class="controls">
             <input type="text" class="input-block-level" data-bind="value: settings.plugins.meross_smart_plugs.email">
         </div>
+	</div>
+	<div class="control-group">
         <label class="control-label">{{  _('Password') }}</label>
         <div class="controls">
             <input type="password" class="input-block-level" data-bind="value: settings.plugins.meross_smart_plugs.password">
         </div>
+	</div>
+	<div class="control-group">
 		<label class="control-label">{{  _('Device name (case sensitive)') }}</label>
         <div class="controls">
             <input type="text" class="input-block-level" data-bind="value: settings.plugins.meross_smart_plugs.device_name">
         </div>
+	</div>
+	<div class="control-group">
 		<label class="control-label">{{  _('Shutdown delay') }}</label>
         <div class="controls">
             <input type="text" class="input-block-level" data-bind="value: settings.plugins.meross_smart_plugs.shutdown_delay">
@@ -27,7 +37,7 @@
     <div class="control-group">
 		<label class="control-label">{{  _('Plugs to shutdown') }}</label>
         <div class="controls">
-            <img src="/plugin/meross_smart_plugs/static/img/mss425f.png">
+            <img src="/plugin/meross_smart_plugs/static/img/mss425f.png"><br>
             <input id="first_plug" type="checkbox" class="input-block-level"data-bind="checked: settings.plugins.meross_smart_plugs.multiplug.first_plug">
             <input id="second_plug" type="checkbox" class="input-block-level"data-bind="checked: settings.plugins.meross_smart_plugs.multiplug.second_plug">
             <input id="third_plug" type="checkbox" class="input-block-level"data-bind="checked: settings.plugins.meross_smart_plugs.multiplug.third_plug">

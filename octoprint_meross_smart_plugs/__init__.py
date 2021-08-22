@@ -87,32 +87,40 @@ class MerossSmartPlugsPlugin(octoprint.plugin.AssetPlugin,
                                 pip="https://github.com/Nikey/OctoPrint-MerossSmartPlugs/archive/{target_version}.zip"
                         )
                 )
+        def start_shutdown(self):
+                email = self._settings.get(['email'])
+                password = self._settings.get(['password'])
+                device_type = self._settings.get(['device_type'])
+                device_name = self._settings.get(['device_name'])
+                delay = self._settings.get(['delay'])
+
+                multiplug = self._settings.get(['multiplug'])
+                plug_channel = []
+                if 'first_plug' in multiplug and multiplug['first_plug'] is True:
+                        plug_channel.append(1)
+                if 'second_plug' in multiplug and multiplug['second_plug'] is True:
+                        plug_channel.append(2)
+                if 'third_plug' in multiplug and multiplug['third_plug'] is True:
+                        plug_channel.append(3)
+                if 'fourth_plug' in multiplug and multiplug['fourth_plug'] is True:
+                        plug_channel.append(4)
+                if 'usb_plug' in multiplug and multiplug['usb_plug'] is True:
+                        plug_channel.append(5)
+
+                if email != '' and password != '':
+                        asyncio.create_task(shutdown(email, password, device_type, device_name, delay, plug_channel))
+                else:
+                        self._logger.info('Connection information are not been set!')
+                
 
         def hook_gcode_queuning(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
                 if gcode == 'M81':
-                        email = self._settings.get(['email'])
-                        password = self._settings.get(['password'])
-                        device_type = self._settings.get(['device_type'])
-                        device_name = self._settings.get(['device_name'])
-                        delay = self._settings.get(['delay'])
-
-                        multiplug = self._settings.get(['multiplug'])
-                        plug_channel = []
-                        if 'first_plug' in multiplug and multiplug['first_plug'] is True:
-                                plug_channel.append(1)
-                        if 'second_plug' in multiplug and multiplug['second_plug'] is True:
-                                plug_channel.append(2)
-                        if 'third_plug' in multiplug and multiplug['third_plug'] is True:
-                                plug_channel.append(3)
-                        if 'fourth_plug' in multiplug and multiplug['fourth_plug'] is True:
-                                plug_channel.append(4)
-                        if 'usb_plug' in multiplug and multiplug['usb_plug'] is True:
-                                plug_channel.append(5)
-
-                        if email != '' and password != '':
-                                asyncio.create_task(shutdown(email, password, device_type, device_name, delay, plug_channel))
-                        else:
-                                self._logger.info('Connection information are not been set!')
+                        start_shutdown(self)
+                        
+        def custom_atcommand_handler(comm, phase, command, parameters, tags=None, *args, **kwargs):
+                if command == "shutdown":
+                        start_shutdown(self)
+                        
 
 
 __plugin_name__ = "Meross Smart Plugs"
@@ -125,6 +133,7 @@ def __plugin_load__():
         global __plugin_hooks__
         __plugin_hooks__ = {
                 "octoprint.comm.protocol.gcode.queuing": __plugin_implementation__.hook_gcode_queuning,
+                "octoprint.comm.protocol.atcommand.queuing": __plugin_implementation__.custom_atcommand_handler,
                 "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information
         }
 
