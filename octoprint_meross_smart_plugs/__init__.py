@@ -14,7 +14,7 @@ async def shutdown(plugin, email, password, m_device_type, m_device_name, delay,
         if m_device_type=="MSS210":
                 plugs = manager.find_devices(device_type='mss210', device_name=m_device_name)
                 if len(plugs) > 0:
-                        plugin._logger.info("Found instance... Starting shutdown in "+delay+" seconds!")
+                        plugin._logger.info("Found instance... Starting shutdown in "+str(delay)+" seconds!")
                         time.sleep(delay)
                         plug = plugs[0]
                         await plug.async_update()
@@ -25,7 +25,7 @@ async def shutdown(plugin, email, password, m_device_type, m_device_name, delay,
         else:
                 plugs = manager.find_devices(device_type='mss425e', device_name=m_device_name, channel=plug_channel) or manager.find_devices(device_type='mss425f', device_name=m_device_name, channel=plug_channel)
                 if len(plugs) > 0:
-                        plugin._logger.info("Found instance... Starting shutdown in "+delay+" seconds!")
+                        plugin._logger.info("Found instance... Starting shutdown in "+str(delay)+" seconds!")
                         time.sleep(delay)
                         plug = plugs[0]
                         for id_plug in id_plugs:
