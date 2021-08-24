@@ -116,7 +116,7 @@ class MerossSmartPlugsPlugin(octoprint.plugin.AssetPlugin,
 
                 if email != '' and password != '':
                         self._logger.info("Creating asyncio task for shutting down "+device_type+" ("+device_name+")")
-                        asyncio.create_task(shutdown(plugin, email, password, device_type, device_name, delay, plug_channel))
+                        asyncio.create_task(shutdown(self, email, password, device_type, device_name, delay, plug_channel))
                 else:
                         self._logger.info('Connection information has not been set!')
                 
