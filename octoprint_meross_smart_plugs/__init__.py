@@ -5,7 +5,8 @@ from meross_iot.http_api import MerossHttpClient
 from meross_iot.manager import MerossManager
 
 
-async def shutdown(email, password, m_device_type, m_device_name, delay, plug_channel):
+async def shutdown(plugin, email, password, m_device_type, m_device_name, delay, plug_channel):
+        plugin._logger.info("Start detection of plugs...")
         http_api_client = await MerossHttpClient.async_from_user_password(email=email, password=password)
         manager = MerossManager(http_client=http_api_client)
         await manager.async_init()
@@ -13,21 +14,27 @@ async def shutdown(email, password, m_device_type, m_device_name, delay, plug_ch
         if m_device_type=="MSS210":
                 plugs = manager.find_devices(device_type='mss210', device_name=m_device_name)
                 if len(plugs) > 0:
+                        plugin._logger.info("Found instance... Starting shutdown in "+delay+" seconds!")
+                        time.sleep(delay)
                         plug = plugs[0]
                         await plug.async_update()
                         await asyncio.sleep(1)
-                        time.sleep(delay)
                         await plug.async_turn_off()
+                else:
+                        plugin._logger.error("Failed to find a instance! Please check the name and type of the device in the settings menu.")
         else:
                 plugs = manager.find_devices(device_type='mss425e', device_name=m_device_name, channel=plug_channel) or manager.find_devices(device_type='mss425f', device_name=m_device_name, channel=plug_channel)
                 if len(plugs) > 0:
+                        plugin._logger.info("Found instance... Starting shutdown in "+delay+" seconds!")
+                        time.sleep(delay)
                         plug = plugs[0]
                         for id_plug in id_plugs:
                                 await plug.async_update()
                                 await asyncio.sleep(1)
                                 await plug.async_turn_off(channel=id_plug)
-                                await asyncio.sleep(1)
-                        time.sleep(delay)
+                        
+                else:
+                        plugin._logger.error("Failed to find a instance! Please check the name and type of the device in the settings menu.")
                 manager.close()
                 await http_api_client.async_logout()
 
@@ -108,18 +115,21 @@ class MerossSmartPlugsPlugin(octoprint.plugin.AssetPlugin,
                         plug_channel.append(5)
 
                 if email != '' and password != '':
-                        asyncio.create_task(shutdown(email, password, device_type, device_name, delay, plug_channel))
+                        self._logger.info("Creating asyncio task for shutting down "+device_type+" ("+device_name+")")
+                        asyncio.create_task(shutdown(plugin, email, password, device_type, device_name, delay, plug_channel))
                 else:
-                        self._logger.info('Connection information are not been set!')
+                        self._logger.info('Connection information has not been set!')
                 
 
         def hook_gcode_queuning(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
                 if gcode == 'M81':
-                        start_shutdown(self)
+                        self._logger.info("Start GCODE M81 shutdown...")
+                        self.start_shutdown(self)
                         
-        def custom_atcommand_handler(comm, phase, command, parameters, tags=None, *args, **kwargs):
+        def custom_atcommand_handler(self, comm, phase, command, parameters, tags=None, *args, **kwargs):
                 if command == "shutdown":
-                        start_shutdown(self)
+                        self._logger.info("Start @SHUTDOWN command...")
+                        self.start_shutdown(self)
                         
 
 
