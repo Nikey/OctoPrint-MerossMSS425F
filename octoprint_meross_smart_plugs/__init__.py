@@ -124,12 +124,12 @@ class MerossSmartPlugsPlugin(octoprint.plugin.AssetPlugin,
         def hook_gcode_queuning(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
                 if gcode == 'M81':
                         self._logger.info("Start GCODE M81 shutdown...")
-                        self.start_shutdown(self)
+                        self.start_shutdown()
                         
         def custom_atcommand_handler(self, comm, phase, command, parameters, tags=None, *args, **kwargs):
                 if command == "shutdown":
                         self._logger.info("Start @SHUTDOWN command...")
-                        self.start_shutdown(self)
+                        self.start_shutdown()
                         
 
 
